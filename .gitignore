@@ -1,0 +1,12 @@
+﻿target/
+*.log
+.env
+.env.*
+!.env.example
+application-local.properties
+application-secrets.properties
+.idea/
+.vscode/
+*.class
+
+*.bak
