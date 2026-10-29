@@ -1,0 +1,292 @@
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 18px;
+  background: linear-gradient(135deg, #f5f9ff, #eaf3ff);
+  font-family: inherit;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 38px;
+  background: #fff;
+  border: 1px solid #e3ebf7;
+  border-radius: 22px;
+  box-shadow: 0 18px 55px rgba(37, 99, 235, 0.09);
+}
+
+.auth-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 30px;
+  color: #172554;
+  font-size: 25px;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.auth-brand span:last-child {
+  color: #2563eb;
+}
+
+.auth-cloud {
+  color: #2563eb;
+}
+
+.auth-card h1 {
+  margin: 0;
+  color: #172554;
+  font-size: 28px;
+  text-align: center;
+  letter-spacing: -0.7px;
+}
+
+.auth-subtitle {
+  margin: 10px 0 26px;
+  color: #64748b;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.auth-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 10px;
+  outline: none;
+  background: #fbfdff;
+  color: #172554;
+  font: inherit;
+  font-weight: 400;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.auth-form input:focus {
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.auth-primary {
+  margin-top: 5px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 15px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.auth-primary:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 17px;
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e8edf5;
+}
+
+.auth-socials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.auth-socials button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 12px 8px;
+  border: 1px solid #dbe4f0;
+  border-radius: 10px;
+  background: white;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-socials button:hover {
+  background: #f8fbff;
+  border-color: #93b4ed;
+}
+
+.google-mark {
+  color: #4285f4;
+  font-size: 18px;
+}
+
+.auth-switch {
+  margin: 24px 0 0;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+}
+
+.auth-switch a {
+  color: #2563eb;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.auth-back {
+  display: block;
+  margin-top: 22px;
+  color: #64748b;
+  font-size: 13px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.auth-back:hover {
+  color: #2563eb;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 28px 21px;
+    border-radius: 18px;
+  }
+
+  .auth-card h1 {
+    font-size: 25px;
+  }
+}
+/* Increase the CloudWise logo size */
+.auth-brand {
+  font-size: 30px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Reduce space above and below Welcome back */
+.auth-card h1 {
+  font-size: 34px;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 4px;
+}
+
+/* Keep the subtitle close to the heading */
+.auth-subtitle {
+  margin-top: 0;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-brand {
+  align-self: center;
+  text-align: center;
+}
+
+.auth-card h1,
+.auth-subtitle {
+  width: 100%;
+  text-align: center;
+}
+/* CloudWise brand */
+.auth-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  font-size: 32px;
+  font-weight: 750;
+  text-align: center;
+  margin: 0 0 28px;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+/* Welcome back heading */
+.auth-card h1 {
+  width: 100%;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0 0 10px;
+}
+
+/* Subtitle */
+.auth-subtitle {
+  width: 100%;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 28px;
+  color: #667085;
+}
+
+/* Form alignment */
+.auth-form {
+  width: 100%;
+}
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  padding: 4px;
+}
