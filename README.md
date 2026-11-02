@@ -1,332 +1,127 @@
-\# AI Cloud Vendor Recommendation System
+# CloudWise — AI Cloud Vendor Recommendation System
 
+CloudWise is a React frontend with a Java 21 / Spring Boot backend and MySQL recommendation history. The recommendation form sends workload requirements to the Java API, which scores eight cloud providers and returns ranked demo recommendations.
 
+## Stack
 
-A Java Spring Boot backend that recommends cloud providers based on a user's budget, storage requirements, performance needs, and scalability preferences.
+- Frontend: React, Vite
+- Backend: Java 21, Spring Boot 3.5.6, Maven
+- Database: MySQL 8, Spring Data JPA / Hibernate
+- API documentation: Swagger UI / OpenAPI
 
+## Requirements
 
+- Java JDK 21
+- Maven 3.9+
+- MySQL Server 8
+- Node.js and npm
 
-\## Features
+## Backend setup
 
+1. Create the database:
 
+   ```sql
+   CREATE DATABASE cloud_recommendation_db;
+   ```
 
-\- Cloud provider recommendations
+2. From the repository root, set your local MySQL password in PowerShell (do not commit it):
 
-\- Budget-based recommendation requests
+   ```powershell
+   $env:DB_PASSWORD = Read-Host "Enter your MySQL root password"
+   ```
 
-\- Storage, performance, and scalability parameters
+3. Run Spring Boot:
 
-\- Recommendation history stored using MySQL
+   ```powershell
+   mvn spring-boot:run
+   ```
 
-\- REST API endpoints
+The backend runs at `http://localhost:8080`. Keep this terminal open.
 
-\- Health-check endpoint
+## Frontend setup
 
-\- Swagger UI API documentation
-
-
-
-\## Tech Stack
-
-
-
-\- \*\*Language:\*\* Java 21
-
-\- \*\*Backend Framework:\*\* Spring Boot 3.5.6
-
-\- \*\*Build Tool:\*\* Maven
-
-\- \*\*Database:\*\* MySQL 8
-
-\- \*\*Database Integration:\*\* Spring Data JPA / Hibernate
-
-\- \*\*API Documentation:\*\* Swagger UI / OpenAPI
-
-\- \*\*Version Control:\*\* Git and GitHub
-
-
-
-\## Prerequisites
-
-
-
-Install the following before running the application:
-
-
-
-\- Java JDK 21
-
-\- Maven
-
-\- MySQL Server 8
-
-\- Git
-
-
-
-\## Setup Instructions
-
-
-
-\### 1. Clone the repository
-
-
-
-```bash
-
-git clone https://github.com/malviyaanuj180-web/ai-cloud-vendor-recommendation-system.git
-
-cd ai-cloud-vendor-recommendation-system
-
-```
-
-
-
-\### 2. Create the database
-
-
-
-Open MySQL and execute:
-
-
-
-```sql
-
-CREATE DATABASE cloud\_recommendation\_db;
-
-```
-
-
-
-\### 3. Configure database credentials
-
-
-
-The application reads its database password from the `DB\_PASSWORD` environment variable.
-
-
-
-In Windows PowerShell, set it for the current terminal session:
-
-
+Open a second terminal:
 
 ```powershell
-
-$env:DB\_PASSWORD = "YOUR\_MYSQL\_PASSWORD"
-
+cd frontend
+npm install
+npm run dev
 ```
 
+The frontend uses `http://localhost:8080` by default for its API. To point it to another backend, create `frontend/.env.local` with:
 
-
-Replace `YOUR\_MYSQL\_PASSWORD` with your local MySQL password. Do not commit your password to GitHub.
-
-
-
-Check that `src/main/resources/application.properties` has the correct MySQL username and database URL for your machine.
-
-
-
-\### 4. Run the application
-
-
-
-From the project root, execute:
-
-
-
-```powershell
-
-mvn spring-boot:run
-
+```env
+VITE_API_URL=http://localhost:8080
 ```
 
+Restart the Vite development server after changing environment variables.
 
+## Full CloudWise recommendation API
 
-The API should be available at:
+The React recommendation form calls:
 
+`POST /api/recommendations`
 
+Example JSON body:
 
-`http://localhost:8080`
+```json
+{
+  "workload": "Machine Learning",
+  "budget": 500,
+  "cpu": 4,
+  "ram": 16,
+  "storage": 250,
+  "traffic": "High",
+  "priority": "Performance"
+}
+```
 
+Supported workload values:
+- `Web Application`
+- `Mobile Application`
+- `Machine Learning`
+- `Data Analytics`
+- `Database`
+- `Development & Testing`
+- `Storage & Backup`
 
+Traffic values: `Low`, `Medium`, `High`, `Very High`.
 
-Keep the PowerShell session open while the application is running.
+Priority values: `Balanced`, `Lowest Cost`, `Performance`, `Scalability`, `Reliability`.
 
+The response contains eight ranked provider options with fields including `provider`, `service`, `score`, `monthly_cost`, `currency`, `reason`, `description`, and `tradeoff`. The full input and top recommendation are stored in MySQL history.
 
-
-\## API Endpoints
-
-
-
-Base URL: `http://localhost:8080`
-
-
+## Other API endpoints
 
 | Method | Endpoint | Purpose |
-
 |---|---|---|
+| GET | `/api/health` | Health check |
+| GET | `/api/providers` | List cloud providers |
+| GET | `/api/recommend` | Legacy recommendation endpoint (INR demo estimates) |
+| POST | `/api/recommendations` | Full CloudWise recommendation endpoint (USD demo estimates) |
+| GET | `/api/history` | Read recommendation history |
+| DELETE | `/api/history/{id}` | Delete one history record |
 
-| GET | `/api/health` | Check application health |
+Swagger UI: `http://localhost:8080/swagger-ui/index.html`
 
-| GET | `/api/providers` | Retrieve cloud providers |
+## Pricing and recommendation disclaimer
 
-| GET | `/api/recommend` | Get a cloud recommendation |
+All costs and provider capability ratings in the recommendation engine are illustrative demo values. They are not official provider quotations, live prices, or independently measured benchmarks. Verify actual regional prices, service availability, taxes, and limits with each provider before deployment. The CloudWise recommendation endpoint reports estimates in USD; the legacy endpoint retains its earlier INR response contract.
 
-| GET | `/api/history` | Retrieve recommendation history |
-
-| DELETE | `/api/history/{id}` | Delete a history entry |
-
-
-
-\### Example recommendation request
-
-
-
-```http
-
-GET /api/recommend?budget=5000\&storage=100\&performance=medium\&scalability=medium
-
-```
-
-
-
-Example full URL:
-
-
-
-`http://localhost:8080/api/recommend?budget=5000\&storage=100\&performance=medium\&scalability=medium`
-
-
-
-The request supplies a budget of 5000, storage of 100, medium performance, and medium scalability. The actual response depends on the current recommendation logic.
-
-
-
-\### Swagger UI
-
-
-
-Once the application is running, open:
-
-
-
-`http://localhost:8080/swagger-ui/index.html`
-
-
-
-Use Swagger UI to inspect and test the available API operations.
-
-
-
-\## Frontend Integration
-
-
-
-The frontend can call the backend using the base URL:
-
-
-
-`http://localhost:8080`
-
-
-
-For example:
-
-
-
-```javascript
-
-const response = await fetch(
-
-&#x20; "http://localhost:8080/api/recommend?budget=5000\&storage=100\&performance=medium\&scalability=medium"
-
-);
-
-
-
-const data = await response.json();
-
-console.log(data);
-
-```
-
-
-
-If the frontend runs on a different port, configure CORS in the backend if required. Replace `localhost` with the backend machine's reachable address when testing across different devices.
-
-
-
-\## Project Structure
-
-
+## Project structure
 
 ```text
-
-src/
-
-└── main/
-
-&#x20;   ├── java/com/cloudrecommendation/
-
-&#x20;   │   ├── CloudRecommendationApplication.java
-
-&#x20;   │   ├── controller/
-
-&#x20;   │   │   ├── HealthController.java
-
-&#x20;   │   │   ├── ProviderController.java
-
-&#x20;   │   │   └── RecommendationController.java
-
-&#x20;   │   ├── entity/
-
-&#x20;   │   │   └── RecommendationHistory.java
-
-&#x20;   │   ├── repository/
-
-&#x20;   │   │   └── RecommendationHistoryRepository.java
-
-&#x20;   │   └── service/
-
-&#x20;   │       └── RecommendationService.java
-
-&#x20;   └── resources/
-
-&#x20;       └── application.properties
-
+frontend/                         React + Vite application
+src/main/java/com/cloudrecommendation/
+  controller/                     REST controllers
+  dto/                            Request DTOs
+  entity/                         JPA entities
+  repository/                     Spring Data repositories
+  service/                        Recommendation logic
+src/main/resources/
+  application.properties          MySQL and server configuration
 ```
 
+## Security note
 
-
-\## Current Scope
-
-
-
-This repository contains the Java Spring Boot backend. The frontend is developed separately and can integrate through the REST API.
-
-
-
-Cloud recommendations are based on the application's implemented logic. Verify provider pricing and service specifications against official cloud-provider sources before using recommendations for real deployments.
-
-
-
-\## Author
-
-
-
-Anuj Malviya
-
-
-
-GitHub: https://github.com/malviyaanuj180-web
-
-
-
-\---
-
-
-
-This project is developed for learning, demonstration, and cloud vendor recommendation use cases.
-
-
-
+Keep `DB_PASSWORD` in your local environment. Never put database credentials in source files or commit `.env.local`.
