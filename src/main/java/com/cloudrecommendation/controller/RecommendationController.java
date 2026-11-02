@@ -53,7 +53,7 @@ public class RecommendationController {
                 history.setPriority(request.priority());
                 history.setCurrency("USD");
                 history.setRecommendedProvider(String.valueOf(best.get("provider")));
-                history.setEstimatedMonthlyCostINR(
+                history.setEstimatedMonthlyCostUSD(
                         ((Number) best.get("monthly_cost")).doubleValue());
                 historyRepository.save(history);
             }
