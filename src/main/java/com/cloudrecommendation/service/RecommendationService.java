@@ -162,7 +162,18 @@ public class RecommendationService {
         int requiredPerformance = rating(performance);
         int requiredScalability = rating(scalability);
         for (Map<String, Object> p : providers) {
-            double legacyBaseCost = switch (String.valueOf(p.get("id"))) {\n                case "aws" -> 1500;\n                case "azure" -> 1600;\n                case "gcp" -> 1400;\n                case "oci" -> 1350;\n                case "ibm" -> 1550;\n                case "digitalocean" -> 700;\n                case "linode" -> 750;\n                case "alibaba" -> 1200;\n                default -> 1500;\n            };\n            double cost = legacyBaseCost + storage * 2.0 + performanceSurcharge(performance);
+            double legacyBaseCost = switch (String.valueOf(p.get("id"))) {
+                case "aws" -> 1500;
+                case "azure" -> 1600;
+                case "gcp" -> 1400;
+                case "oci" -> 1350;
+                case "ibm" -> 1550;
+                case "digitalocean" -> 700;
+                case "linode" -> 750;
+                case "alibaba" -> 1200;
+                default -> 1500;
+            };
+            double cost = legacyBaseCost + storage * 2.0 + performanceSurcharge(performance);
             boolean withinBudget = cost <= budget;
             int performanceRating = (int) p.get("web");
             int scalabilityRating = (int) p.get("scalability");
