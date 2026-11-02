@@ -358,7 +358,7 @@ const removeSaved = (id) => {
     JSON.stringify(updatedSaved)
   );
 };
-  const API_URL = import.meta.env.VITE_API_URL || "";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
  
 useEffect(() => {
@@ -471,549 +471,57 @@ function calculateCloudCost(event) {
 }
 
 
-function generateRecommendations(event) {
+async function generateRecommendations(event) {
   event.preventDefault();
   setError("");
   setLoading(true);
   setResults([]);
 
   try {
-    const workload = form.workload;
-    const priority = form.priority;
-    const budget = Number(form.budget);
-    const cpu = Number(form.cpu);
-    const ram = Number(form.ram);
-    const storage = Number(form.storage);
-    const traffic = form.traffic;
-
-    // Local cloud service catalogue for the demo.
-    const catalogue = {
-      "Web Application": [
-        {
-          provider: "AWS",
-          service: "AWS App Runner",
-          fit: 10,
-          cost: 8,
-          performance: 8,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed deployment for web applications and APIs.",
-        },
-        {
-          provider: "Microsoft Azure",
-          service: "Azure App Service",
-          fit: 10,
-          cost: 8,
-          performance: 8,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed hosting with deployment and scaling features.",
-        },
-        {
-          provider: "Google Cloud",
-          service: "Cloud Run",
-          fit: 9,
-          cost: 9,
-          performance: 8,
-          scalability: 10,
-          reliability: 9,
-          reason: "Serverless containers that scale with application traffic.",
-        },
-      ],
-
-      "Mobile Application": [
-        {
-          provider: "AWS",
-          service: "AWS Amplify",
-          fit: 9,
-          cost: 8,
-          performance: 8,
-          scalability: 9,
-          reliability: 9,
-          reason: "Tools for building and hosting mobile application backends.",
-        },
-        {
-          provider: "Microsoft Azure",
-          service: "Azure App Service",
-          fit: 8,
-          cost: 8,
-          performance: 8,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed backend hosting for mobile application APIs.",
-        },
-        {
-          provider: "Google Cloud",
-          service: "Firebase",
-          fit: 10,
-          cost: 9,
-          performance: 8,
-          scalability: 9,
-          reliability: 9,
-          reason: "Mobile-focused backend services, authentication and data tools.",
-        },
-      ],
-
-      "Machine Learning": [
-        {
-          provider: "AWS",
-          service: "Amazon SageMaker AI",
-          fit: 10,
-          cost: 6,
-          performance: 10,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed tools for training, deploying and managing ML models.",
-        },
-        {
-          provider: "Microsoft Azure",
-          service: "Azure Machine Learning",
-          fit: 10,
-          cost: 6,
-          performance: 10,
-          scalability: 9,
-          reliability: 9,
-          reason: "A managed platform for ML experiments and model deployment.",
-        },
-        {
-          provider: "Google Cloud",
-          service: "Vertex AI",
-          fit: 10,
-          cost: 7,
-          performance: 10,
-          scalability: 10,
-          reliability: 9,
-          reason: "Managed ML development, training and inference services.",
-        },
-      ],
-
-      "Data Analytics": [
-        {
-          provider: "AWS",
-          service: "Amazon Athena",
-          fit: 9,
-          cost: 9,
-          performance: 8,
-          scalability: 9,
-          reliability: 9,
-          reason: "Query data in S3 without managing database servers.",
-        },
-        {
-          provider: "Microsoft Azure",
-          service: "Azure Synapse Analytics",
-          fit: 9,
-          cost: 7,
-          performance: 9,
-          scalability: 9,
-          reliability: 9,
-          reason: "Analytics services for querying and processing large datasets.",
-        },
-        {
-          provider: "Google Cloud",
-          service: "BigQuery",
-          fit: 10,
-          cost: 8,
-          performance: 10,
-          scalability: 10,
-          reliability: 9,
-          reason: "Managed analytics for large-scale data queries.",
-        },
-      ],
-
-      "Database": [
-        {
-          provider: "AWS",
-          service: "Amazon RDS",
-          fit: 10,
-          cost: 8,
-          performance: 9,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed relational database service.",
-        },
-        {
-          provider: "Microsoft Azure",
-          service: "Azure SQL Database",
-          fit: 10,
-          cost: 8,
-          performance: 9,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed SQL database with built-in administration features.",
-        },
-        {
-          provider: "Google Cloud",
-          service: "Cloud SQL",
-          fit: 10,
-          cost: 8,
-          performance: 9,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed relational databases with simplified maintenance.",
-        },
-      ],
-
-      "Development & Testing": [
-        {
-          provider: "AWS",
-          service: "AWS Lightsail",
-          fit: 9,
-          cost: 9,
-          performance: 7,
-          scalability: 7,
-          reliability: 8,
-          reason: "Simplified cloud infrastructure for development and testing.",
-        },
-        {
-          provider: "Microsoft Azure",
-          service: "Azure App Service",
-          fit: 9,
-          cost: 8,
-          performance: 8,
-          scalability: 9,
-          reliability: 9,
-          reason: "Managed application hosting for test and development environments.",
-        },
-        {
-          provider: "Google Cloud",
-          service: "Cloud Run",
-          fit: 9,
-          cost: 9,
-          performance: 8,
-          scalability: 10,
-          reliability: 9,
-          reason: "Run containerized applications without managing servers.",
-        },
-      ],
-
-      "Storage & Backup": [
-        {
-          provider: "AWS",
-          service: "Amazon S3",
-          fit: 10,
-          cost: 9,
-          performance: 8,
-          scalability: 10,
-          reliability: 10,
-          reason: "Object storage for files, backups and application data.",
-        },
-        {
-          provider: "Microsoft Azure",
-          service: "Azure Blob Storage",
-          fit: 10,
-          cost: 9,
-          performance: 8,
-          scalability: 10,
-          reliability: 10,
-          reason: "Scalable object storage for unstructured data and backups.",
-        },
-        {
-          provider: "Google Cloud",
-          service: "Cloud Storage",
-          fit: 10,
-          cost: 9,
-          performance: 8,
-          scalability: 10,
-          reliability: 10,
-          reason: "Object storage for application files, datasets and backups.",
-        },
-      ],
+    const payload = {
+      workload: form.workload,
+      budget: Number(form.budget),
+      cpu: Number(form.cpu),
+      ram: Number(form.ram),
+      storage: Number(form.storage),
+      traffic: form.traffic,
+      priority: form.priority,
     };
-
-   
-const baseServices = catalogue[workload];
-
-if (!baseServices) {
-  throw new Error("Please select a valid workload type.");
-}
-
-const additionalProviderProfiles = [
-  {
-    provider: "Oracle Cloud",
-    fit: 9,
-    cost: 9,
-    performance: 9,
-    scalability: 9,
-    reliability: 9,
-    serviceNames: {
-      "Web Application": "OCI Compute",
-      "Mobile Application": "OCI Compute",
-      "Machine Learning": "OCI Data Science",
-      "Data Analytics": "OCI Analytics",
-      "Database": "Autonomous Database",
-      "Development & Testing": "OCI Compute",
-      "Storage & Backup": "OCI Object Storage",
-    },
-    reason: "Offers enterprise infrastructure and database services.",
-  },
-  {
-    provider: "IBM Cloud",
-    fit: 8,
-    cost: 7,
-    performance: 9,
-    scalability: 8,
-    reliability: 9,
-    serviceNames: {
-      "Web Application": "IBM Cloud Code Engine",
-      "Mobile Application": "IBM Cloud Code Engine",
-      "Machine Learning": "watsonx",
-      "Data Analytics": "IBM Analytics Engine",
-      "Database": "IBM Cloud Databases",
-      "Development & Testing": "IBM Cloud Virtual Servers",
-      "Storage & Backup": "IBM Cloud Object Storage",
-    },
-    reason: "Provides enterprise cloud, data and hybrid-cloud capabilities.",
-  },
-  {
-    provider: "DigitalOcean",
-    fit: 9,
-    cost: 9,
-    performance: 8,
-    scalability: 8,
-    reliability: 8,
-    serviceNames: {
-      "Web Application": "App Platform",
-      "Mobile Application": "App Platform",
-      "Machine Learning": "Cloud Compute",
-      "Data Analytics": "Cloud Compute",
-      "Database": "Managed Databases",
-      "Development & Testing": "Droplets",
-      "Storage & Backup": "Spaces Object Storage",
-    },
-    reason: "Offers straightforward infrastructure for developers and growing applications.",
-  },
-  {
-    provider: "Akamai Cloud",
-    fit: 8,
-    cost: 9,
-    performance: 8,
-    scalability: 8,
-    reliability: 8,
-    serviceNames: {
-      "Web Application": "Cloud Compute",
-      "Mobile Application": "Cloud Compute",
-      "Machine Learning": "Cloud Compute",
-      "Data Analytics": "Cloud Compute",
-      "Database": "Cloud Compute",
-      "Development & Testing": "Cloud Compute",
-      "Storage & Backup": "Object Storage",
-    },
-    reason: "Offers developer-oriented infrastructure and distributed cloud capabilities.",
-  },
-  {
-    provider: "Alibaba Cloud",
-    fit: 9,
-    cost: 8,
-    performance: 9,
-    scalability: 9,
-    reliability: 9,
-    serviceNames: {
-      "Web Application": "Elastic Compute Service",
-      "Mobile Application": "Function Compute",
-      "Machine Learning": "Machine Learning Platform for AI",
-      "Data Analytics": "MaxCompute",
-      "Database": "ApsaraDB",
-      "Development & Testing": "Elastic Compute Service",
-      "Storage & Backup": "Object Storage Service",
-    },
-    reason: "Provides a broad cloud service catalogue, including compute, storage and data services.",
-  },
-];
-
-const services = [
-  ...baseServices,
-  ...additionalProviderProfiles.map((profile) => ({
-    provider: profile.provider,
-    service: profile.serviceNames[workload],
-    fit: profile.fit,
-    cost: profile.cost,
-    performance: profile.performance,
-    scalability: profile.scalability,
-    reliability: profile.reliability,
-    reason: profile.reason,
-  })),
-];
-
-
-    if (!services) {
-      throw new Error("Please select a valid workload type.");
-    }
 
     if (
-      !Number.isFinite(budget) ||
-      budget <= 0 ||
-      !Number.isFinite(cpu) ||
-      cpu < 1 ||
-      !Number.isFinite(ram) ||
-      ram < 1 ||
-      !Number.isFinite(storage) ||
-      storage < 1
+      !Number.isFinite(payload.budget) || payload.budget <= 0 ||
+      !Number.isInteger(payload.cpu) || payload.cpu < 1 || payload.cpu > 256 ||
+      !Number.isInteger(payload.ram) || payload.ram < 1 ||
+      !Number.isInteger(payload.storage) || payload.storage < 1
     ) {
-      throw new Error(
-        "Enter a valid budget and positive CPU, RAM and storage values."
-      );
+      throw new Error("Please enter valid budget, CPU, RAM and storage values.");
     }
 
-    // The weights change according to the user's selected priority.
-    const weightsByPriority = {
-      Balanced: {
-        fit: 0.40,
-        cost: 0.35,
-        scalability: 0.25,
-        performance: 0,
-        reliability: 0,
-      },
-      "Lowest Cost": {
-        fit: 0.25,
-        cost: 0.50,
-        scalability: 0.15,
-        performance: 0.05,
-        reliability: 0.05,
-      },
-      Performance: {
-        fit: 0.25,
-        cost: 0.15,
-        scalability: 0.15,
-        performance: 0.35,
-        reliability: 0.10,
-      },
-      Scalability: {
-        fit: 0.25,
-        cost: 0.15,
-        scalability: 0.40,
-        performance: 0.15,
-        reliability: 0.05,
-      },
-      Reliability: {
-        fit: 0.25,
-        cost: 0.15,
-        scalability: 0.15,
-        performance: 0.10,
-        reliability: 0.35,
-      },
-    };
-
-    const weights = {
-      ...(weightsByPriority[priority] ||
-        weightsByPriority.Balanced),
-    };
-
-    // Higher traffic increases the importance of scalability.
-    if (traffic === "High" || traffic === "Very High") {
-      weights.scalability += 0.10;
-      weights.cost -= 0.05;
-      weights.fit -= 0.05;
-    }
-
-    const ranked = services.map((item) => {
-      // Each catalogue rating is on a 1–10 scale.
-      // Convert the weighted result into a percentage.
-      const weightedScore =
-        (
-          item.fit * weights.fit +
-          item.cost * weights.cost +
-          item.scalability * weights.scalability +
-          item.performance * weights.performance +
-          item.reliability * weights.reliability
-        ) * 10;
-
-      const score = Math.round(weightedScore);
-
-      const priorityExplanation = {
-        Balanced:
-          "balances workload suitability, cost suitability and scalability",
-        "Lowest Cost":
-          "gives extra weight to the catalogue's cost-suitability rating",
-        Performance:
-          "gives extra weight to performance and workload suitability",
-        Scalability:
-          "gives extra weight to scalability for changing workloads",
-        Reliability:
-          "gives extra weight to the catalogue's reliability rating",
-      }[priority] || "balances workload suitability, cost and scalability";
-
-      const trafficExplanation = {
-        Low: "You selected low expected traffic.",
-        Medium: "You selected medium expected traffic.",
-        High: "You selected high expected traffic.",
-        "Very High": "You selected very high expected traffic.",
-      }[traffic];
-
-      const personalizedReason =
-        `For your ${workload.toLowerCase()}, this service has a ` +
-        `${item.fit}/10 workload-fit rating and a ` +
-        `${item.scalability}/10 scalability rating. ` +
-        `${priorityExplanation}. ` +
-        `${trafficExplanation} ` +
-        `Your budget is ${budget} in the currency you entered, ` +
-        `and your requested resources are ${cpu} CPU core(s), ` +
-        `${ram} GB RAM and ${storage} GB storage. ` +
-        `These resource requirements should be verified against ` +
-        `the service's actual configuration and pricing before deployment.`;
-
-      return {
-        ...item,
-        score,
-        reason: item.reason,
-        personalizedReason,
-        workload,
-        priority,
-        traffic,
-        budget,
-        cpu,
-        ram,
-        storage,
-        scoreBreakdown: {
-          workloadFit: Math.round(item.fit * 10),
-          costSuitability: Math.round(item.cost * 10),
-          scalability: Math.round(item.scalability * 10),
-          performance: Math.round(item.performance * 10),
-          reliability: Math.round(item.reliability * 10),
-        },
-        monthly_cost: null,
-        demo: true,
-      };
+    const response = await fetch(`${API_URL}/api/recommendations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
 
-    ranked.sort((a, b) => b.score - a.score);
+    if (!response.ok) {
+      const message = await response.text();
+      throw new Error(message || `Recommendation request failed (${response.status}).`);
+    }
 
-    
-const estimatedMonthlyCost =
-  cpu * 0.03 * 24 * 30 +
-  ram * 0.004 * 24 * 30 +
-  storage * 0.02;
+    const recommendations = await response.json();
+    if (!Array.isArray(recommendations) || recommendations.length === 0) {
+      throw new Error("The backend did not return any recommendations.");
+    }
 
-setResults(ranked);
-
-addNotification({
-  type: "recommendation",
-  title: "Recommendations ready",
-  message: `Found ${ranked.length} cloud options for your ${workload} workload.`,
-});
-
-if (estimatedMonthlyCost > budget) {
-  if (!sessionStorage.getItem("cloudwiseRecommendationsNotified")) {
-  addNotification({
-    type: "recommendation",
-    title: "Recommendations ready",
-    message: `Found ${ranked.length} cloud options for your ${workload} workload.`,
-  });
-
-  sessionStorage.setItem("cloudwiseRecommendationsNotified", "true");
-}
-}
-
+    setResults(recommendations);
   } catch (err) {
-    setError(
-      err.message || "Could not generate recommendations."
-    );
+    setError(err.message || "Unable to generate recommendations. Check that the Java backend is running.");
   } finally {
     setLoading(false);
   }
 }
 
-
-  function saveResult(item) {
+function saveResult(item) {
     const name =
       item.provider ||
       item.provider_name ||
