@@ -1,6 +1,6 @@
-
+﻿
 import { useLocation, useNavigate } from "react-router-dom";
-import "./SetupGuide.css";
+import "./setupguide.css";
 
 const deploymentGuides = {
   aws: {
@@ -276,9 +276,10 @@ console.log("Selected guide:", guide.providerName, guide.serviceName);
             )
           }
         >
-          Read official documentation ↗
+          Read official documentation â†—
         </button>
       </section>
     </main>
   );
 }
+
